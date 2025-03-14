@@ -220,3 +220,8 @@ def get_match_player_data(jogo_id, jogador_id):
         return df_jf
     except: 
         print(f'Error in loading: Match {jogo_id} - Player {jogador_id}.')
+
+
+
+def create_project_folder(folder_name): 
+    os.makedirs(f'{project_folder}/{folder_name}',exist_ok=True)

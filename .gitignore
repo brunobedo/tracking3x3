@@ -171,3 +171,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 \scripts\__pycache__
+
+#Folders
+results/

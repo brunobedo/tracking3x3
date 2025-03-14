@@ -224,4 +224,4 @@ def get_match_player_data(jogo_id, jogador_id):
 
 
 def create_project_folder(folder_name): 
-    os.makedirs(f'{project_folder}/{folder_name}',exist_ok=True)
+    os.makedirs(f'{get_project_dir()}/{folder_name}',exist_ok=True)

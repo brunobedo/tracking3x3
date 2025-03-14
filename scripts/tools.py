@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd 
 import os 
 from scipy.signal import butter, filtfilt, firwin
-
+import numpy as np
 
 
 # Get project folder

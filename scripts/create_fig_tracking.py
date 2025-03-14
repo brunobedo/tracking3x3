@@ -5,10 +5,10 @@ import argparse
 
 def plot_player_trajectory(df_player, jogo_id, jogador_id, save=True):
     # Criar a figura e o eixo
-    fig, ax = plt.subplots(figsize=(4, 4))  # Aumenta o tamanho para melhor visualização
+    fig, ax = plt.subplots(figsize=(3, 3))  # Aumenta o tamanho para melhor visualização
 
     # Plotar a linha preta
-    ax.plot(df_player['x'], df_player['y'], 'k', linewidth=2)  # Linha mais espessa para melhor visualização
+    ax.plot(df_player['x'], df_player['y'], 'k', linewidth=1.5)  # Linha mais espessa para melhor visualização
 
     # Remover os ticks dos eixos
     ax.set_xticks([])
@@ -21,7 +21,7 @@ def plot_player_trajectory(df_player, jogo_id, jogador_id, save=True):
     ax.spines['left'].set_visible(False)
 
     # Adicionar título
-    ax.set_title(f'Trajetória | Jogo {jogo_id} - Atleta {jogador_id}', fontsize=12, fontweight="bold")
+    ax.set_title(f'Trajetória | Jogo {jogo_id} - Atleta {jogador_id}', fontsize=8, fontweight="bold")
 
     # Chamar a função para desenhar metade direita (se necessário)
     ax = tools.draw_half_right(ax)
@@ -31,7 +31,7 @@ def plot_player_trajectory(df_player, jogo_id, jogador_id, save=True):
         folder = 'results/figures/tracking/'
         file = f'tracking_j{jogo_id}p{jogador_id}.png'
         tools.create_project_folder(folder)
-        plt.savefig(f'{tools.get_project_dir()}/{folder}/{file}', dpi=300, bbox_inches="tight")
+        plt.savefig(f'{tools.get_project_dir()}/{folder}/{file}', dpi=150, bbox_inches="tight",transparent=False)
     # Exibir o gráfico
     # plt.show()
 

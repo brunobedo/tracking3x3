@@ -3,6 +3,7 @@ import pandas as pd
 import os 
 from scipy.signal import butter, filtfilt, firwin
 import numpy as np
+from matplotlib.patches import Circle, Rectangle, Arc
 
 
 # Get project folder
@@ -95,3 +96,72 @@ def apply_filter(data, sample_rate, method='butterworth', cutoff=5, order=4, num
         raise ValueError("Method must be 'butterworth' or 'fir'")
 
     return filtered_data
+
+
+
+def draw_half_right(ax=None, linecolor='white', lw=1.5, outer_lines=False, courtcolor='#CC5500', remove_axis=False):
+    if ax is None:
+        ax = plt.gca()
+    
+    court_width, court_height = 15.05, 14.2  # Dimensões da quadra
+
+    # Contorno da quadra
+    outer_lines = Rectangle((0, 0), court_height, court_width, linewidth=lw, color=linecolor, fill=False)
+
+    # Cesta no centro da altura e uma certa distância da linha de fundo
+    hoop = Circle((court_height - 1.2, court_width / 2), radius=0.20, linewidth=lw, color=linecolor, fill=False)
+
+    # Tabela
+    backboard_distance_from_baseline = 1.2
+    backboard = Rectangle((court_height - backboard_distance_from_baseline + 0.5, court_width / 2 - 1), 0.1, 2, linewidth=lw, color=linecolor)
+    
+    # Área pintada
+    paint_width = 4.9
+    paint_height = 5.8
+    outer_box = Rectangle((court_height - paint_height, court_width / 2 - paint_width / 2), paint_height, paint_width, linewidth=lw, color=linecolor, fill=False)
+    inner_box_width = 3.6
+    inner_box = Rectangle((court_height - paint_height, court_width / 2 - inner_box_width / 2), paint_height, inner_box_width, linewidth=lw, color=linecolor, fill=False)
+
+    # Arco superior do lance livre
+    top_free_throw = Arc((court_height - paint_height, court_width / 2), inner_box_width, inner_box_width, theta1=90, theta2=270, linewidth=lw, color=linecolor, fill=False)
+
+    # Arco inferior do lance livre (tracejado)
+    bottom_free_throw = Arc((court_height - paint_height, court_width / 2), inner_box_width, inner_box_width, theta1=270, theta2=90, linewidth=lw, color=linecolor, linestyle='dashed')
+
+    # Área restrita
+    restricted_radius = 2
+    restricted = Arc((court_height - backboard_distance_from_baseline, court_width / 2), restricted_radius*1.3, restricted_radius*1.3, theta1=90, theta2=270, linewidth=lw, color=linecolor)
+
+    # Linha dos 3 pontos
+    three_point_radius = 6.75  # Aproximação para a quadra adaptada
+    three_arc = Arc((court_height - backboard_distance_from_baseline - 1, court_width / 2), three_point_radius * 2.1, three_point_radius*2, theta1=90, theta2=270, linewidth=lw, color=linecolor)
+
+    # Círculo central (não aplicável para meia quadra, mas mantido para completude)
+    center_circle_radius = 2
+    center_outer_arc = Arc((0, court_width / 2), center_circle_radius * 2, center_circle_radius * 2, theta1=270, theta2=90, linewidth=lw, color=linecolor)
+    center_inner_arc = Arc((0, court_width / 2), center_circle_radius, center_circle_radius, theta1=270, theta2=90, linewidth=lw, color=linecolor)
+    
+    # Three point line
+    # Create the side 3pt lines, they are 14ft long before they begin to arc
+    corner_three_a = Rectangle((11.5, 0.77), 2.5, 0, linewidth=lw,
+                                color=linecolor)
+    corner_three_b = Rectangle((11.5, court_width-0.78), 2.5, 0, linewidth=lw,
+                                color=linecolor)
+    
+    court_elements = [  hoop, backboard, outer_box, inner_box, top_free_throw, bottom_free_throw, restricted, three_arc, center_outer_arc, center_inner_arc,
+                        corner_three_a,corner_three_b]
+
+    if outer_lines:
+        court_elements.append(outer_lines)
+
+    for element in court_elements:
+        ax.add_patch(element)
+
+    ax.set_xlim(-1, court_height+1)
+    ax.set_ylim(-1, court_width+1)
+    ax.set_aspect('equal')
+    ax.set_facecolor(courtcolor)
+    if remove_axis: 
+        ax.set_xticks([])
+        ax.set_yticks([])
+    return ax

@@ -4,6 +4,7 @@ import os
 from scipy.signal import butter, filtfilt, firwin
 import numpy as np
 from matplotlib.patches import Circle, Rectangle, Arc
+from scipy.interpolate import UnivariateSpline
 
 
 # Get project folder
@@ -165,3 +166,33 @@ def draw_half_right(ax=None, linecolor='white', lw=1.5, outer_lines=False, court
         ax.set_xticks([])
         ax.set_yticks([])
     return ax
+
+
+
+def spline_interpolation(array, k=3, s=0):
+    """
+    Realiza interpolação spline para preencher valores faltantes em um array.
+
+    Parâmetros:
+    - array: np.ndarray, array contendo valores, incluindo np.nan para valores faltantes.
+    - k: int, opcional, grau do spline (padrão é 3 para spline cúbico).
+    - s: float, opcional, fator de suavização. Se s=0, o spline passará por todos os pontos.
+
+    Retorna:
+    - array_interpolated: np.ndarray, array com os valores faltantes preenchidos.
+    """
+    # Identificar os índices de valores não faltantes e faltantes
+    x = np.arange(len(array))
+    mask = ~np.isnan(array)
+    x_known = x[mask]
+    y_known = array[mask]
+    x_missing = x[~mask]
+
+    # Criar um spline a partir dos dados conhecidos
+    spline = UnivariateSpline(x_known, y_known, k=k, s=s)
+
+    # Usar o spline para interpolar os valores faltantes
+    array_interpolated = array.copy()
+    array_interpolated[~mask] = spline(x_missing)
+    
+    return array_interpolated

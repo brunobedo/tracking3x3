@@ -196,3 +196,27 @@ def spline_interpolation(array, k=3, s=0):
     array_interpolated[~mask] = spline(x_missing)
     
     return array_interpolated
+
+
+
+def get_match_player_data(jogo_id, jogador_id):
+    try:
+        df_info = tools.get_match_info(jogo_id)
+        df_tracking = tools.load_tracking(jogo_id)
+        frame_start = int(df_info['frame_inicial'][0])
+        frame_final = int(df_info['frame_final'][0])
+        df_tracking_cut = df_tracking.iloc[frame_start:frame_final]
+        df_j = df_tracking_cut.filter(like=f'j{jogador_id}', axis=1)
+        dat_x = df_j.filter(like='x', axis=1).iloc[:, 0].to_numpy()
+        dat_y = df_j.filter(like='y', axis=1).iloc[:, 0].to_numpy()
+
+        dat_x_int = tools.spline_interpolation(dat_x)
+        dat_y_int = tools.spline_interpolation(dat_y)
+
+        df_j = pd.DataFrame(data={'x': dat_x_int, 'y': dat_y_int})
+        array_filt = tools.apply_filter(df_j, sample_rate=30, cutoff=0.5)
+        df_jf = pd.DataFrame(array_filt, columns=['x', 'y'])
+        print(f'Successfully loaded tracking data for: Match {jogo_id} - Player {jogador_id}.')
+        return df_jf
+    except: 
+        print(f'Error in loading: Match {jogo_id} - Player {jogador_id}.')

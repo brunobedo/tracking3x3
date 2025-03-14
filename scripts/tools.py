@@ -201,8 +201,8 @@ def spline_interpolation(array, k=3, s=0):
 
 def get_match_player_data(jogo_id, jogador_id):
     try:
-        df_info = tools.get_match_info(jogo_id)
-        df_tracking = tools.load_tracking(jogo_id)
+        df_info = get_match_info(jogo_id)
+        df_tracking = load_tracking(jogo_id)
         frame_start = int(df_info['frame_inicial'][0])
         frame_final = int(df_info['frame_final'][0])
         df_tracking_cut = df_tracking.iloc[frame_start:frame_final]
@@ -210,11 +210,11 @@ def get_match_player_data(jogo_id, jogador_id):
         dat_x = df_j.filter(like='x', axis=1).iloc[:, 0].to_numpy()
         dat_y = df_j.filter(like='y', axis=1).iloc[:, 0].to_numpy()
 
-        dat_x_int = tools.spline_interpolation(dat_x)
-        dat_y_int = tools.spline_interpolation(dat_y)
+        dat_x_int = spline_interpolation(dat_x)
+        dat_y_int = spline_interpolation(dat_y)
 
         df_j = pd.DataFrame(data={'x': dat_x_int, 'y': dat_y_int})
-        array_filt = tools.apply_filter(df_j, sample_rate=30, cutoff=0.5)
+        array_filt = apply_filter(df_j, sample_rate=30, cutoff=0.5)
         df_jf = pd.DataFrame(array_filt, columns=['x', 'y'])
         print(f'Successfully loaded tracking data for: Match {jogo_id} - Player {jogador_id}.')
         return df_jf

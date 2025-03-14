@@ -52,7 +52,7 @@ def load_tracking(jogo_id):
         df = pd.read_csv(file, delim_whitespace=True, header=None)
         print(f"Successfully loaded tracking data for match {jogo_id}.")
         num_cols = df.shape[1]
-        new_column_names = [f"j{i//2 + 1}{'x' if i % 2 == 0 else 'y'}" for i in range(1, num_cols)]  # Start at index 1
+        new_column_names = [f"j{i//2 + 1}{'x' if i % 2 == 0 else 'y'}" for i in range(num_cols - 1)]  # Ajuste no range
         df.columns = ['frames'] + new_column_names  # Assign 'frames' only to the first column
 
         # Remove fully empty columns
